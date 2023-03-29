@@ -1,0 +1,6 @@
+- name: Set up VM for Data ingestion and Dashboard
+  hosts: dashboard
+  vars_files:
+    - 'vars/vault.yml'
+  roles:
+    - role: dashboard

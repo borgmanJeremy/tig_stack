@@ -1,0 +1,63 @@
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+
+- name: Install InfluxDB key
+  get_url:
+    url:  https://repos.influxdata.com/influxdata-archive.key
+    dest: /etc/apt/trusted.gpg.d/influxdb.asc
+
+- name:  Add InfluxDB repository
+  apt_repository:
+    repo:  "deb [signed-by=/etc/apt/trusted.gpg.d/influxdb.asc] https://repos.influxdata.com/ubuntu jammy main"
+    state: present
+    update_cache: yes
+
+# Grafana
+- name: Import Grafana GPG signing key
+  get_url: 
+    url: https://apt.grafana.com/gpg.key 
+    dest: /etc/apt/trusted.gpg.d/graphana.asc
+
+- name: Add Grafana repository
+  apt_repository:
+    repo: 'deb [signed-by=/etc/apt/trusted.gpg.d/grafana.asc] deb https://apt.grafana.com/ubuntu jammy main'
+    state: present
+    update_cache: yes
+
+
+- name: Install packages with no config
+  become: true
+  become_user: root
+  package:
+    state: present
+    name: "{{ item }}"
+  loop:
+    - influxdb2
+    - telegraf
+    - grafana
+
+- name: Enable Influx service
+  ansible.builtin.systemd:
+    state: started
+    enabled: true
+    name: influxdb
+
+- name: Enable Telegraf service
+  ansible.builtin.systemd:
+    state: started
+    enabled: true
+    name: telegraf
+
+- name: Enable Grafana service
+  ansible.builtin.systemd:
+    state: started
+    enabled: true
+    name: telegraf
+
+
+- name: Create Bucket
+  command: influx bucket create --name {{ bucket_name }} --org {{ org_name }} --retention 0

@@ -1,0 +1,12 @@
+---
+hostname: "cyborgman.me"
+
+# User Settings
+main_username: jeremy
+main_groupname: "{{ main_username }}"
+main_uid: "1000"
+main_gid: "{{ main_uid }}"
+
+# bucket details
+bucket_name:   tigstack
+org_name:     jeremy
