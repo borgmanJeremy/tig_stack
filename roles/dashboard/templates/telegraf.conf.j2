@@ -1,0 +1,149 @@
+[global_tags]
+[agent]
+  interval = "10s"
+  round_interval = true
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+
+  flush_interval = "10s"
+  flush_jitter = "0s"
+
+  precision = "0s"
+
+  # debug = false
+  ## Log only error level messages.
+  # quiet = false
+
+  ## Log target controls the destination for logs and can be one of "file",
+  ## "stderr" or, on Windows, "eventlog".  When set to "file", the output file
+  ## is determined by the "logfile" setting.
+  # logtarget = "file"
+
+  ## Name of the file to be logged to when using the "file" logtarget.  If set to
+  ## the empty string then logs are written to stderr.
+  # logfile = ""
+
+  ## The logfile will be rotated after the time interval specified.  When set
+  ## to 0 no time based rotation is performed.  Logs are rotated only when
+  ## written to, if there is no log activity rotation may be delayed.
+  # logfile_rotation_interval = "0h"
+
+  ## The logfile will be rotated when it becomes larger than the specified
+  ## size.  When set to 0 no size based rotation is performed.
+  # logfile_rotation_max_size = "0MB"
+  ## Pick a timezone to use when logging or type 'local' for local time.
+  ## Example: America/Chicago
+  # log_with_timezone = ""
+
+  ## Override default hostname, if empty use os.Hostname()
+  hostname = ""
+  ## If set to true, do no set the "host" tag in the telegraf agent.
+  omit_hostname = false
+
+###############################################################################
+#                            OUTPUT PLUGINS                                   #
+###############################################################################
+
+
+# Configuration for sending metrics to InfluxDB 2.0
+[[outputs.influxdb_v2]]
+  urls = ["http://127.0.0.1:8086"]
+
+  ## Token for authentication.
+  token = "{{ influx_token  }}"
+
+  ## Organization is the name of the organization you wish to write to.
+  organization = "{{ influx_org_name }}"
+
+  ## Destination bucket to write into.
+  bucket = "{{  influx_bucket_name }}"
+
+###############################################################################
+#                            INPUT PLUGINS                                    #
+###############################################################################
+
+
+# Read metrics about cpu usage
+[[inputs.cpu]]
+  ## Whether to report per-cpu stats or not
+  percpu = true
+  ## Whether to report total system cpu stats or not
+  totalcpu = true
+  ## If true, collect raw CPU time metrics
+  collect_cpu_time = false
+  ## If true, compute and report the sum of all non-idle CPU states
+  report_active = false
+  ## If true and the info is available then add core_id and physical_id tags
+  core_tags = false
+
+
+# Read metrics about disk usage by mount point
+[[inputs.disk]]
+  ## By default stats will be gathered for all mount points.
+  ## Set mount_points will restrict the stats to only the specified mount points.
+  # mount_points = ["/"]
+
+  ## Ignore mount points by filesystem type.
+  ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
+
+  ## Ignore mount points by mount options.
+  ## The 'mount' command reports options of all mounts in parathesis.
+  ## Bind mounts can be ignored with the special 'bind' option.
+  # ignore_mount_opts = []
+
+
+# Read metrics about disk IO by device
+# This plugin ONLY supports Linux
+[[inputs.diskio]]
+  ## By default, telegraf will gather stats for all devices including
+  ## disk partitions.
+  ## Setting devices will restrict the stats to the specified devices.
+  ## NOTE: Globbing expressions (e.g. asterix) are not supported for
+  ##       disk synonyms like '/dev/disk/by-id'.
+  # devices = ["sda", "sdb", "vd*", "/dev/disk/by-id/nvme-eui.00123deadc0de123"]
+  ## Uncomment the following line if you need disk serial numbers.
+  # skip_serial_number = false
+  #
+  ## On systems which support it, device metadata can be added in the form of
+  ## tags.
+  ## Currently only Linux is supported via udev properties. You can view
+  ## available properties for a device by running:
+  ## 'udevadm info -q property -n /dev/sda'
+  ## Note: Most, but not all, udev properties can be accessed this way. Properties
+  ## that are currently inaccessible include DEVTYPE, DEVNAME, and DEVPATH.
+  # device_tags = ["ID_FS_TYPE", "ID_FS_USAGE"]
+  #
+  ## Using the same metadata source as device_tags, you can also customize the
+  ## name of the device via templates.
+  ## The 'name_templates' parameter is a list of templates to try and apply to
+  ## the device. The template may contain variables in the form of '$PROPERTY' or
+  ## '${PROPERTY}'. The first template which does not contain any variables not
+  ## present for the device is used as the device name tag.
+  ## The typical use case is for LVM volumes, to get the VG/LV name instead of
+  ## the near-meaningless DM-0 name.
+  # name_templates = ["$ID_FS_LABEL","$DM_VG_NAME/$DM_LV_NAME"]
+
+
+# Get kernel statistics from /proc/stat
+# This plugin ONLY supports Linux
+[[inputs.kernel]]
+  # no configuration
+
+
+# Read metrics about memory usage
+[[inputs.mem]]
+
+# Get the number of processes and group them by status
+# This plugin ONLY supports non-Windows
+[[inputs.processes]]
+  ## Use sudo to run ps command on *BSD systems. Linux systems will read
+  ## /proc, so this does not apply there.
+  use_sudo = false
+
+
+# Read metrics about swap memory usage
+[[inputs.swap]]
+
+# Read metrics about system load & uptime
+[[inputs.system]]

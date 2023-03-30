@@ -49,4 +49,19 @@
 
 - name: setup influx
   command: influx setup -b {{ influx_bucket_name }} -o {{ influx_org_name }} -u {{ influx_user_name }} -p {{ influx_password }}  -t {{ influx_token }} -r 0 -f
+  ignore_errors: true
  
+- name: setup telegraf
+  template:
+    src: "telegraf.conf.j2"
+    dest: /etc/telegraf/telegraf.conf
+    owner: root
+    group: root
+
+- name: Enable Influx service
+  ansible.builtin.systemd:
+    state: started
+    enabled: true
+    name: telegraf
+
+
