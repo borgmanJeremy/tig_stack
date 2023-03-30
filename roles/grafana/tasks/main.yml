@@ -1,0 +1,34 @@
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Import Grafana GPG signing key
+  get_url: 
+    url: https://apt.grafana.com/gpg.key 
+    dest: /etc/apt/trusted.gpg.d/grafana.asc
+
+- name: Add Grafana repository
+  apt_repository:
+    repo: 'deb [signed-by=/etc/apt/trusted.gpg.d/grafana.asc] https://apt.grafana.com stable main'
+    state: present
+    update_cache: yes
+
+
+- name: Install packages with no config
+  become: true
+  become_user: root
+  package:
+    state: present
+    name: "{{ item }}"
+  loop:
+    - grafana
+
+- name: Enable Grafana service
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    name: grafana-server.service
+
+

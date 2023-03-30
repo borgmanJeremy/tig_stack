@@ -1,0 +1,41 @@
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+
+
+- name: Install InfluxDB key
+  get_url:
+    url:  https://repos.influxdata.com/influxdata-archive.key
+    dest: /etc/apt/trusted.gpg.d/influxdb.asc
+
+- name:  Add InfluxDB repository
+  apt_repository:
+    repo:  "deb [signed-by=/etc/apt/trusted.gpg.d/influxdb.asc] https://repos.influxdata.com/ubuntu jammy stable"
+    state: present
+    update_cache: yes
+
+- name: Install packages with no config
+  become: true
+  become_user: root
+  package:
+    state: present
+    name: "{{ item }}"
+  loop:
+    - telegraf
+
+- name: setup telegraf
+  template:
+    src: "telegraf.conf.j2"
+    dest: /etc/telegraf/telegraf.conf
+    owner: root
+    group: root
+
+- name: Enable Telegraf service
+  ansible.builtin.systemd:
+    state: restarted
+    enabled: true
+    name: telegraf
+
+

@@ -2,5 +2,29 @@
   hosts: dashboard
   vars_files:
     - 'vars/vault.yml'
+  vars:
+    - influx_ip_address: 127.0.0.1
   roles:
-    - role: dashboard
+    - role: influxdb
+    - role: telegraf
+    - role: grafana
+
+
+- name: Deploy zfs and host monitoring
+  hosts: cyborgman, falcon
+  vars_files:
+    - 'vars/vault.yml'
+  vars:
+    - monitor_zfs: true
+  roles:
+    - role: telegraf
+
+
+
+- name: Deploy host monitoring only
+  hosts: caddyproxy
+  vars_files:
+    - 'vars/vault.yml'
+  roles:
+    - role: telegraf
+

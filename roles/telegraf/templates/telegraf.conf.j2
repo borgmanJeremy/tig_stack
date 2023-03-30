@@ -48,7 +48,7 @@
 
 # Configuration for sending metrics to InfluxDB 2.0
 [[outputs.influxdb_v2]]
-  urls = ["http://127.0.0.1:8086"]
+  urls = ["http://{{ influx_ip_address }}:8086"]
   token = "{{ influx_token  }}"
   organization = "{{ influx_org_name }}"
   bucket = "{{  influx_bucket_name }}"
@@ -108,5 +108,14 @@
 [[inputs.swap]]
 
 [[inputs.system]]
+
+{% endif %}
+
+
+{% if monitor_zfs %}
+
+[[inputs.zfs]]
+poolMetrics = true
+datasetMetrics = true
 
 {% endif %}

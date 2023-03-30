@@ -16,20 +16,7 @@
     state: present
     update_cache: yes
 
-# Grafana
-- name: Import Grafana GPG signing key
-  get_url: 
-    url: https://apt.grafana.com/gpg.key 
-    dest: /etc/apt/trusted.gpg.d/grafana.asc
-
-- name: Add Grafana repository
-  apt_repository:
-    repo: 'deb [signed-by=/etc/apt/trusted.gpg.d/grafana.asc] https://apt.grafana.com stable main'
-    state: present
-    update_cache: yes
-
-
-- name: Install packages with no config
+- name: Install packages
   become: true
   become_user: root
   package:
@@ -37,12 +24,10 @@
     name: "{{ item }}"
   loop:
     - influxdb2
-    - telegraf
-    - grafana
 
 - name: Enable Influx service
   ansible.builtin.systemd:
-    state: started
+    state: restarted
     enabled: true
     name: influxdb
 
@@ -50,18 +35,4 @@
 - name: setup influx
   command: influx setup -b {{ influx_bucket_name }} -o {{ influx_org_name }} -u {{ influx_user_name }} -p {{ influx_password }}  -t {{ influx_token }} -r 0 -f
   ignore_errors: true
- 
-- name: setup telegraf
-  template:
-    src: "telegraf.conf.j2"
-    dest: /etc/telegraf/telegraf.conf
-    owner: root
-    group: root
-
-- name: Enable Influx service
-  ansible.builtin.systemd:
-    state: started
-    enabled: true
-    name: telegraf
-
 

@@ -1,0 +1,3 @@
+# Influx Credentials
+influx_password: "<password>"
+influx_token: "<token>"

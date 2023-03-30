@@ -1,3 +1,16 @@
+
+## Overview
 This repo is designed to generate a grafana monitoring dashboard and install all reporting jobs. 
 
-there is a bit of a chick and egg problem related to generating the API key. Once the dashboard role has run go to the influxdb web interface  http://<ip>:8086 to create an API key. Record this in the vault. 
+## Prerequisites
+This playbook assumes all hosts are networked via tailscale.
+
+## How to Use
+1. First open vars > vault_sample.yml and fill in a password and API token. Then resave this as vault.yml. The Makefile in this repo includes jobs to encrypt and decrypt a file named vault.yml. This was borrowed from: https://github.com/ironicbadger/infra
+
+2. Edit group_vars/all.yml to adjust usernames
+
+3. Edit server.yml to define which tasks should run on which hosts
+
+## Known issues
+Setting up the initial influx database is not 'idempotent' so when the playbook runs again it will throw an error which is ignored. 
