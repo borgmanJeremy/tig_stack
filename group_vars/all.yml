@@ -11,3 +11,6 @@ main_gid: "{{ main_uid }}"
 influx_bucket_name:   tigstack
 influx_org_name:      home
 influx_user_name:     jeremy
+
+# Enable monitors
+monitor_system: true
