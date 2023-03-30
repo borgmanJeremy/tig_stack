@@ -7,6 +7,7 @@ main_groupname: "{{ main_username }}"
 main_uid: "1000"
 main_gid: "{{ main_uid }}"
 
-# bucket details
-bucket_name:   tigstack
-org_name:     jeremy
+# influx details
+influx_bucket_name:   tigstack
+influx_org_name:      home
+influx_user_name:     jeremy
