@@ -34,7 +34,7 @@
 
 
 - name: Deploy host monitoring only
-  hosts: caddyproxy
+  hosts: caddyproxy, arr
   vars_files:
     - 'vars/vault.yml'
   roles:
