@@ -7,5 +7,7 @@ influx_ip_address:    monitoringvm #assumes tailscale hostname
 
 
 # Enable monitors
-monitor_system: true
-monitor_zfs: false
+monitor_system:         true
+monitor_network:        true
+monitor_zfs:            false
+monitor_internet_speed: false

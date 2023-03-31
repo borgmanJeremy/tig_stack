@@ -119,3 +119,16 @@ poolMetrics = true
 datasetMetrics = true
 
 {% endif %}
+
+
+{% if monitor_internet_speed %}
+
+[[inputs.internet_speed]]
+	interval = "120m"
+
+{% endif %}
+
+
+{% if monitor_network %}
+[[inputs.net]]
+{% endif %}

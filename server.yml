@@ -11,11 +11,23 @@
 
 
 - name: Deploy zfs and host monitoring
-  hosts: cyborgman, falcon
+  hosts: cyborgman
   vars_files:
     - 'vars/vault.yml'
   vars:
     - monitor_zfs: true
+  roles:
+    - role: telegraf
+
+
+
+- name: Deploy zfs and host monitoring
+  hosts: falcon
+  vars_files:
+    - 'vars/vault.yml'
+  vars:
+    - monitor_zfs: true
+    - monitor_internet_speed: true
   roles:
     - role: telegraf
 
