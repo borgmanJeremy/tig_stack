@@ -124,11 +124,19 @@ datasetMetrics = true
 {% if monitor_internet_speed %}
 
 [[inputs.internet_speed]]
-	interval = "1d"
+	interval = "48h"
 
 {% endif %}
 
 
 {% if monitor_network %}
 [[inputs.net]]
+{% endif %}
+
+
+
+{% if monitor_sanoid_snapshots %}
+[[inputs.exec]]
+  commands = ["/usr/sbin/sanoid  --monitor-snapshots"]
+  data_format = "nagios"
 {% endif %}

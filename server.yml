@@ -16,6 +16,7 @@
     - 'vars/vault.yml'
   vars:
     - monitor_zfs: true
+    - monitor_sanoid_snapshots: true
   roles:
     - role: telegraf
 

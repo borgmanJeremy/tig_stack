@@ -11,3 +11,4 @@ monitor_system:         true
 monitor_network:        true
 monitor_zfs:            false
 monitor_internet_speed: false
+monitor_sanoid_snapshots: false
