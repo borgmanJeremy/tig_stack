@@ -137,6 +137,18 @@ datasetMetrics = true
 
 {% if monitor_sanoid_snapshots %}
 [[inputs.exec]]
-  commands = ["/usr/sbin/sanoid  --monitor-snapshots"]
+  commands = ["sudo /usr/sbin/sanoid  --monitor-snapshots"]
+  interval = "4h"
   data_format = "nagios"
+  name_suffix = "_snapshot_health"
+{% endif %}
+
+
+{% if monitor_sanoid_health %}
+[[inputs.exec]]
+  collection_jitter = "2m"
+  commands = ["sudo /usr/sbin/sanoid  --monitor-health"]
+  interval = "4h"
+  data_format = "nagios"
+  name_suffix = "_snapshot_health"
 {% endif %}
