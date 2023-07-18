@@ -1,0 +1,11 @@
+[[processors.geoip]]
+## db_path is the location of the MaxMind GeoIP2 City database
+    db_path = "/var/lib/geoip/GeoLite2-City.mmdb"
+
+[[processors.geoip.lookup]]
+# get the ip from the field "source_ip" and put the lookup results in the respective destination fields (if specified)
+    field = "ufw_src_ip"
+    dest_country = "ufw_src_ip_country"
+    dest_city = "ufw_src_ip_city"
+    dest_lat = "ufw_src_ip_lat"
+    dest_lon = "ufw_src_ip_lon"

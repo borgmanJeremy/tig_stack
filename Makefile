@@ -1,3 +1,6 @@
+deps:
+	ansible-galaxy install gantsign.golang
+
 server:
 	ansible-playbook -b server.yml --ask-become-pass
 

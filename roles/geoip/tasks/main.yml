@@ -1,0 +1,31 @@
+---
+
+- name: Clone GeoIP Telegraf Repo
+  git:
+    repo: https://github.com/a-bali/telegraf-geoip
+    dest:  /home/jeremy/telegraf-geoip
+    clone: yes
+    update: yes
+
+- name: Build GeoIP plugin
+  ansible.builtin.shell: |
+   cd /home/jeremy/telegraf-geoip 
+   {{ ansible_local.golang.general.home }}/bin/go build -o geoip cmd/main.go
+   cp geoip /usr/bin/geoip
+
+- name: Copy GeoIP Database
+  copy: 
+    src: files/GeoLite2-City.mmdb
+    dest: /var/lib/geoip/
+
+- name: Ensure GeoIP conf directory exists
+  file: 
+    path: /etc/geoip
+    state: directory
+
+- name: Copy GeoIP Config
+  template:
+      src: "geoip.conf.j2"
+      dest: /etc/geoip/geoip.conf
+      owner: root
+      group: root

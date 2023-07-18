@@ -53,9 +53,54 @@
   organization = "{{ influx_org_name }}"
   bucket = "{{  influx_bucket_name }}"
 
+
+###############################################################################
+#                            PROCESSOR PLUGINS                                   #
+###############################################################################
+
+
+{% if process_geoip %}
+[[processors.execd]]
+  command = ["/usr/bin/geoip", "--config", "/etc/geoip/geoip.conf"]
+{% endif %}
+
 ###############################################################################
 #                            INPUT PLUGINS                                    #
 ###############################################################################
+
+{% if monitor_systemd %}
+[[inputs.systemd_units]]
+
+{% endif %}
+
+{% if monitor_temperature %}
+[[inputs.temp]]
+
+{% endif %}
+
+{% if monitor_docker %}
+[[inputs.docker]]
+[[inputs.docker_log]]
+
+{% endif %}
+
+
+{% if monitor_ufw  %}
+[[inputs.tail]]
+    files = ["/var/log/ufw.log"]
+    from_beginning = true
+    name_override = "ufw_log"
+    watch_method = "poll"
+    grok_patterns = ["%{CUSTOM_LOG_FORMAT}"]
+    grok_custom_patterns = '''
+         CUSTOM_LOG_FORMAT %{SYSLOGTIMESTAMP:ufw_timestamp:ts-syslog} %{SYSLOGHOST:ufw_hostname} %{DATA:ufw_program}: \[%{DATA}\] \[UFW %{WORD:ufw_action}\] IN=%{DATA:ufw_interface} OUT=%{DATA:ufw_interface_out}( (MAC|PHYSIN)=%{DATA:ufw_mac})?SRC=%{IP:ufw_src_ip} DST=%{IP:ufw_dest_ip}( LEN=%{NUMBER:ufw_packet_len})? %{GREEDYDATA:ufw_tcp_opts} PROTO=%{WORD:ufw_protocol}( SPT=%{NUMBER:ufw_source_port})?( DPT=%{NUMBER:ufw_dest_port})?%{GREEDYDATA:ufw_tcp_opts}
+    '''
+    data_format = "grok"
+    grok_timezone = "UTC"
+    grok_custom_pattern_files = []
+
+{% endif %}
+
 
 {% if monitor_system  %}
 # Read metrics about cpu usage

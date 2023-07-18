@@ -1,0 +1,2 @@
+dependencies:
+  - role: gantsign.golang # required to build geoip

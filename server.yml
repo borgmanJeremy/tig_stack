@@ -10,6 +10,8 @@
     - role: grafana
 
 
+## Hosts to deploy telegraf agent to
+
 - name: Deploy zfs and host monitoring
   hosts: cyborgman
   vars_files:
@@ -21,23 +23,32 @@
   roles:
     - role: telegraf
 
-
-
 - name: Deploy zfs and host monitoring
   hosts: falcon
   vars_files:
     - 'vars/vault.yml'
   vars:
     - monitor_zfs: true
+    - monitor_systemd: true
     - monitor_sanoid_snapshots: true
     - monitor_sanoid_health: true
+    - monitor_docker: true
   roles:
     - role: telegraf
 
-
+- name: Deploy host monitoring + ufw
+  hosts: caddyproxy
+  vars_files:
+    - 'vars/vault.yml'
+  vars:
+    - monitor_ufw: true
+    - process_geoip: true
+  roles:
+    - role: telegraf
+    - role: geoip
 
 - name: Deploy host monitoring only
-  hosts: caddyproxy, arr
+  hosts: arr
   vars_files:
     - 'vars/vault.yml'
   roles:
